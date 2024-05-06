@@ -1,0 +1,32 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest,windows-latest,ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: cargo build --verbose --release
+    - name: Run tests
+      run: cargo test --verbose
+    - name: 'Upload build target'
+      uses: actions/upload-artifact@v3
+      with:
+        name: qbt-block-xunlei${{ runner.os }}
+        path: |
+          ./target/release/qbt-block-xun*
+        retention-days: 5
+      
